@@ -1,0 +1,92 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minecraft-data-pvc
+spec:
+  storageClassName: managed-premium
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.beta.kubernetes.io/azure-dns-label-name: azuretar-minecraft
+  name: bungee-lb
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 25565
+      targetPort: 25577
+  selector:
+    app: azuretar-bungeecord
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bungeecord
+  labels:
+    app: azuretar-bungeecord
+spec:
+  selector:
+    matchLabels:
+      app: azuretar-bungeecord
+  template:
+    metadata:
+      labels:
+        app: azuretar-bungeecord
+    spec:
+      containers:
+      - name: bungeecord
+        image: azuretar.azurecr.io/minecraft/bungeecord:latest
+        imagePullPolicy: Always
+        tty: true
+        stdin: true
+        ports:
+          - containerPort: 25565
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paper
+spec:
+  ports:
+  - port: 25565
+  selector:
+    app: azuretar-paper
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paper
+  labels:
+    app: azuretar-paper
+spec:
+  selector:
+    matchLabels:
+      app: azuretar-paper
+  template:
+    metadata:
+      labels:
+        app: azuretar-paper
+    spec:
+      volumes:
+        - name: paper-worlds
+          persistentVolumeClaim:
+            claimName: minecraft-data-pvc
+      containers:
+      - name: paper
+        image: azuretar.azurecr.io/minecraft/paper:latest
+        imagePullPolicy: Always
+        tty: true
+        stdin: true
+        env:
+          - name: eula
+            value: "true"
+        volumeMounts:
+          - name: paper-worlds
+            mountPath: /data/worlds
