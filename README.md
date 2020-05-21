@@ -6,11 +6,11 @@ Kubernetes Service. This is the git repository for
 # Dockerfiles
 These Dockerfiles are tested on production. They provide capabilities to:
 
-* De-elevate to the user running the `docker` command. This allows better file
+* De-elevate to the user running `gosu`. This allows better file
   permissions handling.
 * Uses OpenJ9 (Java 8). OpenJ9 is generally a better and more modern JVM
   implementation which allows more possibility when debugging as well. I'm
-  no Java expert, just personal preference.
+  no expert in Java, it's just personal preference.
 * `eula` environment variable to automatically accept Mojang EULA.
 
 Do note that we are not responsible of the consequences of using our guide/code/configuration.
