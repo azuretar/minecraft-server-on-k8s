@@ -1,6 +1,6 @@
 FROM adoptopenjdk:8-openj9 
 
-ARG PAPER_URL=https://ci.destroystokyo.com/job/PaperSpigot/lastSuccessfulBuild/artifact/paperclip.jar
+ARG PAPER_URL=https://papermc.io/api/v2/projects/paper/versions/1.16.5/builds/446/downloads/paper-1.16.5-446.jar
 ENV JAVA_ARGS ""
 ENV SPIGOT_ARGS ""
 ENV PAPER_ARGS ""
